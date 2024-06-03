@@ -1,42 +1,27 @@
 <template>
-  <!-- <div class="h-screen flex">
-    <div class="w-[20%] bg-slate-50 px-2 py-6">
-      <div class="flex justify-center">
-        <img src="/images/logo.svg" alt="" class="w-[100px]" />
-      </div>
-
-      <div class="flex flex-col gap-y-2 mt-6">
-        <h4 class="text-xs text-slate-400 text-center">
-          Перетягнять елемент на екран темірналу
-        </h4>
-        <VElements />
-      </div>
-    </div>
-    <div class="p-6">
-      <div class="flex flex-auto">
-        <h2 class="text-xl font-medium">First screen</h2>
-      </div>
-
-      <div class="mt-6">
-        <VTerminal />
-      </div>
-    </div>
-  </div> -->
-
   <div class="panel__top">
-    <div class="panel__switcher"></div>
     <div class="panel__basic-actions"></div>
   </div>
   <div class="editor-row">
+    <div class="panel__switcher-row">
+      <div class="panel__switcher"></div>
+    </div>
     <div class="panel__right">
-      <div class="layers-container"></div>
-      <div class="styles-container"></div>
-      <div class="blocks-container">
+      <div class="layers-container panel-container"></div>
+      <div class="styles-container panel-container"></div>
+      <div class="blocks-container panel-container">
         <h4 class="blocks-container__title">Перетяніть элемент на термінал</h4>
       </div>
-      <div class="pages-container">
+      <div class="pages-container panel-container">
         <VPages :editor="editor" v-if="editor" />
       </div>
+      <div class="terminal-settings-container panel-container">
+        <TerminalSettingsPanel />
+      </div>
+      <div class="translations-container panel-container">
+        <TranslationsPanel />
+      </div>
+      <div class="traits-container panel-container"></div>
     </div>
     <div class="editor-canvas">
       <div id="gjs"></div>
@@ -50,10 +35,46 @@ import { onMounted, ref } from "vue";
 
 import VPages from "./components/pages/VPages.vue";
 
-import { createImage } from "./components/blocks/image";
-import { createButton } from "./components/blocks/button";
-import { createText } from "./components/blocks/text";
-import { createContainer } from "./components/blocks/layout";
+import { ViewportConfig } from "./config";
+import { createPanelsSwitcher } from "./components/panels/panels-switcher";
+import { createActionsSwitcher } from "./components/panels/actions-switcher";
+
+import {
+  createStylesManager,
+  createStylesCommands,
+} from "./components/managers/styles";
+
+import {
+  createBlocksManager,
+  createBlocksCommands,
+} from "./components/managers/blocks";
+
+import {
+  createLayersManager,
+  createLayersCommands,
+} from "./components/managers/layers";
+
+import {
+  createPagesCommands,
+  createPagesManager,
+  createPagesEvents,
+} from "./components/managers/pages";
+
+import { createSelectorManager } from "./components/managers/selector";
+import { createAssetsManager } from "./components/managers/assets";
+import {
+  createTraitManager,
+  createTraitCommands,
+} from "./components/managers/trait";
+
+import { createTerminalSettingsCommands } from "./components/managers/terminal-settings";
+import { createTranslationsCommands } from "./components/managers/translations";
+
+import { loadComponents } from "./components";
+import { loadTraits } from "./components/traits";
+
+import { TerminalSettingsPanel } from "./components/panels/terminal-settings";
+import { TranslationsPanel } from "./components/panels/translations";
 
 const editor = ref<any>(null);
 
@@ -61,119 +82,19 @@ onMounted(() => {
   const instance = grapesjs.init({
     container: "#gjs",
     fromElement: true,
-    height: "650px",
-    width: "450px",
-    storageManager: false,
-    pageManager: {
-      appendTo: ".pages-container",
-      pages: [
-        {
-          id: "start-screen",
-          name: "Start screen",
-          styles:
-            ".my-page1-el { padding: 20px; height: 100vh; } * {font-family: sans-serif;}",
-          component: '<div class="my-page1-el"></div>',
-        },
-        {
-          id: "second-screen",
-          name: "Second screen",
-          styles: ".my-page2-el { color: blue }",
-          component: '<div class="my-page2-el">Page 2</div>',
-        },
-      ],
-    },
+    width: ViewportConfig.width,
+    height: ViewportConfig.height,
     panels: {
-      defaults: [
-        {
-          id: "layers",
-          el: ".panel__right",
-          resizable: {
-            maxDim: 350,
-            minDim: 200,
-            tc: false, // Top handler
-            cl: true, // Left handler
-            cr: false, // Right handler
-            bc: false, // Bottom handler
-            keyWidth: "flex-basis",
-          },
-        },
-        {
-          id: "panel-switcher",
-          el: ".panel__switcher",
-          buttons: [
-            {
-              id: "show-blocks",
-              active: true,
-              label: "Елементи",
-              command: "show-blocks",
-              togglable: false,
-            },
-            {
-              id: "show-style",
-              active: true,
-              label: "Стилі",
-              command: "show-styles",
-              togglable: false,
-            },
-            {
-              id: "show-layers",
-              active: true,
-              label: "Слої",
-              command: "show-layers",
-              // Once activated disable the possibility to turn it off
-              togglable: false,
-            },
-            {
-              id: "show-pages",
-              active: true,
-              label: "Экрани",
-              command: "show-pages",
-              // Once activated disable the possibility to turn it off
-              togglable: false,
-            },
-          ],
-        },
-      ],
+      defaults: [createPanelsSwitcher(), createActionsSwitcher()],
     },
-    blockManager: {
-      appendTo: ".blocks-container",
-      blocks: [createText(), createImage(), createButton()],
-    },
-    layerManager: {
-      appendTo: ".layers-container",
-    },
-    selectorManager: {
-      appendTo: ".styles-container",
-    },
-    styleManager: {
-      appendTo: ".styles-container",
-      sectors: [
-        {
-          name: "Розмір",
-          open: false,
-          buildProps: [
-            "width",
-            "min-width",
-            "min-height",
-            "max-height",
-            "max-width",
-            "height",
-            "padding",
-            "margin",
-          ],
-        },
-        {
-          name: "Текст",
-          open: false,
-          buildProps: ["font-size", "font-weight", "font-family", "color"],
-        },
-        {
-          name: "Фон",
-          open: false,
-          buildProps: ["background-color", "box-shadow"],
-        },
-      ],
-    },
+    storageManager: false,
+    traitManager: createTraitManager(),
+    assetManager: createAssetsManager(),
+    pageManager: createPagesManager(),
+    blockManager: createBlocksManager(),
+    layerManager: createLayersManager(),
+    selectorManager: createSelectorManager(),
+    styleManager: createStylesManager(),
   });
 
   instance.Panels.addPanel({
@@ -181,74 +102,28 @@ onMounted(() => {
     el: ".panel__top",
   });
 
-  instance.Commands.add("show-layers", {
-    getRowEl(editor) {
-      return editor.getContainer().closest(".editor-row");
-    },
-    getLayersEl(row) {
-      return row.querySelector(".layers-container");
-    },
-
-    run(editor, sender) {
-      const lmEl = this.getLayersEl(this.getRowEl(editor));
-      lmEl.style.display = "";
-    },
-    stop(editor, sender) {
-      const lmEl = this.getLayersEl(this.getRowEl(editor));
-      lmEl.style.display = "none";
-    },
+  instance.Panels.addPanel({
+    id: "panel-switcher-row",
+    el: ".panel__switcher-row",
   });
-  instance.Commands.add("show-styles", {
-    getRowEl(editor) {
-      return editor.getContainer().closest(".editor-row");
-    },
-    getStyleEl(row) {
-      return row.querySelector(".styles-container");
-    },
 
-    run(editor, sender) {
-      const smEl = this.getStyleEl(this.getRowEl(editor));
-      smEl.style.display = "";
-    },
-    stop(editor, sender) {
-      const smEl = this.getStyleEl(this.getRowEl(editor));
-      smEl.style.display = "none";
-    },
+  instance.Panels.addPanel({
+    id: "basic-actions",
+    el: ".panel__basic-actions",
   });
-  instance.Commands.add("show-blocks", {
-    getRowEl(editor) {
-      return editor.getContainer().closest(".editor-row");
-    },
-    getStyleEl(row) {
-      return row.querySelector(".blocks-container");
-    },
 
-    run(editor, sender) {
-      const smEl = this.getStyleEl(this.getRowEl(editor));
-      smEl.style.display = "";
-    },
-    stop(editor, sender) {
-      const smEl = this.getStyleEl(this.getRowEl(editor));
-      smEl.style.display = "none";
-    },
-  });
-  instance.Commands.add("show-pages", {
-    getRowEl(editor) {
-      return editor.getContainer().closest(".editor-row");
-    },
-    getStyleEl(row) {
-      return row.querySelector(".pages-container");
-    },
+  createLayersCommands(instance);
+  createStylesCommands(instance);
+  createBlocksCommands(instance);
+  createPagesCommands(instance);
+  createTraitCommands(instance);
+  createTerminalSettingsCommands(instance);
+  createTranslationsCommands(instance);
 
-    run(editor, sender) {
-      const smEl = this.getStyleEl(this.getRowEl(editor));
-      smEl.style.display = "";
-    },
-    stop(editor, sender) {
-      const smEl = this.getStyleEl(this.getRowEl(editor));
-      smEl.style.display = "none";
-    },
-  });
+  createPagesEvents(instance);
+
+  loadComponents(instance);
+  loadTraits(instance);
 
   editor.value = instance;
 });

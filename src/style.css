@@ -25,6 +25,30 @@ body {
   --gjs-quaternary-color: #ff7a2e;
 }
 
+.panel__switcher-row {
+  display: flex;
+  flex-direction: column;
+
+  border-right: 1px solid rgb(203 213 225);
+}
+
+.panel__switcher-row .gjs-pn-buttons {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+}
+
+.panel__switcher-row.gjs-pn-panel {
+  position: relative;
+  padding: 0;
+  height: 95vh;
+}
+
+.panel__switcher-row .gjs-pn-btn svg {
+  fill: none;
+  stroke: currentColor;
+}
+
 #gjs {
   border: 2px solid rgb(24 24 27);
   border-radius: 10px;
@@ -65,6 +89,8 @@ body {
   flex-basis: 300px;
   position: relative;
   overflow-y: auto;
+  background-color: #f8fafc;
+  padding: 0 14px;
 }
 
 .panel__top {
@@ -132,6 +158,7 @@ body {
   font-family: "Inter";
   font-weight: 500;
   color: rgb(148 163 184);
+  text-align: center;
 
   margin-bottom: 2vh;
 }
@@ -148,7 +175,7 @@ body {
   width: "100%";
 }
 
-.gjs-field {
+.gjs-field:not(.gjs-field-checkbox) {
   background-color: transparent;
 }
 
@@ -209,4 +236,73 @@ body {
 
 .gjs-block-category.gjs-open {
   border-bottom: none;
+}
+
+.gjs-radio-items {
+  column-gap: 8px;
+}
+
+.gjs-radio-item {
+  border-left: none;
+  border-radius: 8px;
+}
+.gjs-radio-item-label {
+  border: 0;
+  background-color: rgb(226 232 240);
+}
+
+.gjs-radio-item input:checked + .gjs-radio-item-label {
+  background-color: #ff7a2e;
+  color: #fff;
+}
+
+.gjs-radio-item {
+  font-weight: 600;
+}
+
+.gjs-field select {
+  font-weight: 600;
+}
+
+.gjs-trt-trait {
+  flex-direction: column;
+  align-items: flex-start;
+  font-weight: normal;
+}
+
+.gjs-label {
+  font-weight: 500;
+}
+
+.gjs-field input {
+  background-color: #fff;
+  border-radius: 8px;
+  padding-left: 8px;
+  font-weight: normal;
+}
+
+.gjs-label-wrp {
+  min-width: 100%;
+  width: 100%;
+}
+
+.tr_form-field {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+}
+
+.tr_form-field__label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tr_form-field__input {
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+  padding: 6px 14px;
 }
