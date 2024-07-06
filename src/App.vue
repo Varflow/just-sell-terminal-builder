@@ -76,6 +76,13 @@ import { loadTraits } from "./components/traits";
 import { TerminalSettingsPanel } from "./components/panels/terminal-settings";
 import { TranslationsPanel } from "./components/panels/translations";
 
+import {
+  createExportCommands,
+  createExportPlugin,
+} from "./components/managers/export";
+
+import { initializePages } from "./initializers";
+
 const editor = ref<any>(null);
 
 onMounted(() => {
@@ -95,6 +102,7 @@ onMounted(() => {
     layerManager: createLayersManager(),
     selectorManager: createSelectorManager(),
     styleManager: createStylesManager(),
+    plugins: [(ed) => createExportPlugin(ed)],
   });
 
   instance.Panels.addPanel({
@@ -119,6 +127,7 @@ onMounted(() => {
   createTraitCommands(instance);
   createTerminalSettingsCommands(instance);
   createTranslationsCommands(instance);
+  createExportCommands(instance);
 
   createPagesEvents(instance);
 
@@ -126,5 +135,9 @@ onMounted(() => {
   loadTraits(instance);
 
   editor.value = instance;
+
+  // Initializers
+
+  initializePages(instance);
 });
 </script>

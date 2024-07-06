@@ -8,13 +8,25 @@ import {
 } from "./blocks/form/fields";
 import { createButtonComponent } from "./blocks/button/component";
 import { createTextComponent } from "./blocks/text";
+import { createLocaleSwitcherComponent } from "./blocks/locale";
+import {
+  createLogoComponent,
+  createPageContainerComponent,
+} from "./blocks/layout";
+
+const creators = [
+  createLocaleSwitcherComponent,
+  createFormComponent,
+  createFieldLabel,
+  createFormField,
+  createInputComponent,
+  createTexteareaComponent,
+  createButtonComponent,
+  createTextComponent,
+  createPageContainerComponent,
+  createLogoComponent,
+];
 
 export const loadComponents = (app: Editor) => {
-  createFormComponent(app);
-  createFieldLabel(app);
-  createFormField(app);
-  createInputComponent(app);
-  createTexteareaComponent(app);
-  createButtonComponent(app);
-  createTextComponent(app);
+  creators.forEach((creator) => creator(app));
 };

@@ -7,6 +7,7 @@ import { createLocale } from "./locale";
 import { createFormBlock } from "./form";
 import { createTextInputBlock, createTextareaFieldBlock } from "./form/fields";
 import { createReceiveCardBlock, createOwnAnimationBlock } from "./animations";
+import { createPageLayout } from "./layout";
 
 export {
   createButton,
@@ -18,20 +19,24 @@ export {
   createFormBlock,
   createTextInputBlock,
   createTextareaFieldBlock,
+  createPageLayout,
 };
 
+const blocks = [
+  createButton,
+  createImage,
+  createContainer,
+  createLogo,
+  createTextBlock,
+  createLocale,
+  createReceiveCardBlock,
+  createOwnAnimationBlock,
+  createFormBlock,
+  createTextInputBlock,
+  createTextareaFieldBlock,
+  createPageLayout,
+];
+
 export const loadBlocks = () => {
-  return [
-    createButton(),
-    createImage(),
-    createContainer(),
-    createLogo(),
-    createTextBlock(),
-    createLocale(),
-    createReceiveCardBlock(),
-    createOwnAnimationBlock(),
-    createFormBlock(),
-    createTextInputBlock(),
-    createTextareaFieldBlock(),
-  ];
+  return blocks.map((block) => block());
 };

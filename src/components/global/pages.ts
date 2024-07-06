@@ -1,10 +1,11 @@
-import { createLocale, createLogo } from "../blocks";
+import { createLocale, createLogo, createPageLayout } from "../blocks";
 
 export const createPageContainer = () => {
-  return `
-        <div class="container">
-            ${createLogo().content}
-            ${createLocale().content}
-        </div>
-    `;
+  return createPageLayout();
+  //   return `
+  //         <div class="container">
+  //             ${createLogo().content}
+  //             ${createLocale().content}
+  //         </div>
+  //     `;
 };

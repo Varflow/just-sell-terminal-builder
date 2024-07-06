@@ -9,14 +9,20 @@
       v-model:label="translation.label"
       v-model:translation="translation.value"
     />
+    <button
+      @click="translationsStore.addTranslation(locale)"
+      class="bg-slate-200 py-2 rounded-lg"
+    >
+      Добавить перевод
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { SelectField } from "../../ui";
-import TranslationField from "./TranslationField.vue";
 import { useTranslationsStore } from "../../../store/translations.store";
+import TranslationField from "./TranslationField.vue";
 
 const locales = [
   { value: "ua", label: "UA" },
@@ -26,15 +32,13 @@ const locales = [
 const translationsStore = useTranslationsStore();
 const locale = ref("ua");
 
-const allTranslations = reactive(translationsStore.translations);
+const allTranslations = computed(() => translationsStore.translations);
 
 const translations = computed(() =>
-  allTranslations.filter((translation) => translation.locale === locale.value)
+  allTranslations.value.filter(
+    (translation) => translation.locale === locale.value
+  )
 );
-
-watch(translations, (translations) => {
-  translationsStore.setTranslations(translations);
-});
 </script>
 
 <style scoped lang="scss">

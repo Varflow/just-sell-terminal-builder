@@ -14,7 +14,7 @@ export const createTexteareaComponent = (editor: Editor) => {
         tagName: "textarea",
         attributes: { class: "form-field-input" },
         traits: [nameTrait, placeholderTrait, requiredTrait],
-        style: createFieldStyles(),
+        styles: createFieldStyles(),
       },
     },
   });

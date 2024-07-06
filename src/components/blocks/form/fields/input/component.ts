@@ -29,7 +29,7 @@ export const createInputComponent = (editor: Editor) => {
           },
           requiredTrait,
         ],
-        style: createFieldStyles(),
+        styles: createFieldStyles(),
       },
     },
 
