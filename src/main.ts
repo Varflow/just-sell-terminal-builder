@@ -3,6 +3,7 @@ import { createPinia } from "pinia";
 
 import "vue-easy-dnd/dist/dnd.css";
 import "grapesjs/dist/css/grapes.min.css";
+import "@sjmc11/tourguidejs/src/scss/tour.scss";
 
 import App from "./App.vue";
 import "./style.css";

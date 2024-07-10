@@ -1,6 +1,7 @@
 <template>
   <div class="panel__top">
     <div class="panel__basic-actions"></div>
+    <Help />
   </div>
   <div class="editor-row">
     <div class="panel__switcher-row">
@@ -32,6 +33,10 @@
 <script setup lang="ts">
 import grapesjs from "grapesjs";
 import { onMounted, ref } from "vue";
+
+import { initTour } from "./components/tour";
+
+import Help from "./components/help/Help.vue";
 
 import VPages from "./components/pages/VPages.vue";
 
@@ -139,5 +144,9 @@ onMounted(() => {
   // Initializers
 
   initializePages(instance);
+
+  instance.onReady(() => {
+    initTour(instance).start();
+  });
 });
 </script>
